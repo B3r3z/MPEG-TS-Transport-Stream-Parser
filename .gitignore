@@ -1,0 +1,22 @@
+# Ignore build directory
+/build/
+
+# Ignore compiled binaries
+*.o
+*.out
+*.exe
+TS_parser
+
+# Ignore editor/IDE files
+*.swp
+*.swo
+*.user
+*.idea/
+.vscode/
+
+# Ignore system files
+.DS_Store
+Thumbs.db
+
+*.ts
+*.txt

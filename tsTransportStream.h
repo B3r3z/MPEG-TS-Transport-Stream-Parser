@@ -67,8 +67,14 @@ public:
   };
 
 protected:
-  //TODO - header fields, e.g.:
-  uint8_t  m_SB;
+  uint8_t  m_SB;   // Sync byte
+  uint8_t  m_E;    // Transport error indicator
+  uint8_t  m_S;    // Payload unit start indicator
+  uint8_t  m_T;    // Transport priority
+  uint16_t m_PID;  // Packet Identifier
+  uint8_t  m_TSC;  // Transport scrambling control
+  uint8_t  m_AFC;  // Adaptation field control
+  uint8_t  m_CC;   // Continuity counter
 
 public:
   void     Reset();
@@ -76,8 +82,14 @@ public:
   void     Print() const;
 
 public:
-  //TODO - direct acces to header field value, e.g.:
-  uint8_t  getSyncByte() const { return m_SB; }  
+  uint8_t  getSyncByte() const { return m_SB; }
+  uint8_t  getTransportErrorIndicator() const { return m_E; }
+  uint8_t  getPayloadUnitStartIndicator() const { return m_S; }
+  uint8_t  getTransportPriority() const { return m_T; }
+  uint16_t getPID() const { return m_PID; }
+  uint8_t  getTransportScramblingControl() const { return m_TSC; }
+  uint8_t  getAdaptationFieldControl() const { return m_AFC; }
+  uint8_t  getContinuityCounter() const { return m_CC; }
 
 public:
   //TODO - derrived informations
