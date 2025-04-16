@@ -17,7 +17,7 @@ This project is a simple MPEG-TS transport stream parser that reads a binary `.t
 ### Build and Run
 1. Clone the repository:
    ```bash
-   git clone <repository_url>
+   git clone <https://github.com/B3r3z/MPEG-TS-Transport-Stream-Parser>
    cd lab02_MPEG-TS-S1-TRANSPORT_STREAM_PARSER_HEADER
    ```
 
