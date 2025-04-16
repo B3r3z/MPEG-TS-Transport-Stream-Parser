@@ -1,0 +1,1 @@
+/usr/bin/g++  -Wall -Wextra -Wpedantic -g "CMakeFiles/TS-PARSER.dir/tsTransportStream.cpp.o" "CMakeFiles/TS-PARSER.dir/TS_parser.cpp.o" -o TS-PARSER 
