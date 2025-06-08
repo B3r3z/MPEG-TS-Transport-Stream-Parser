@@ -110,4 +110,4 @@ class xTS_AdaptationField{
     uint8_t getAdaptationFieldIndicator() const { return m_AFC; }
     uint8_t getAdaptationFieldLength() const { return m_Len; }
     void setAdaptationFieldControl(uint8_t afc) {m_AFC = afc;}
-}
+};
