@@ -68,13 +68,10 @@ while (inputFile.read(reinterpret_cast<char*>(TS_PacketBuffer), xTS::TS_PacketLe
         outputFile << "Error parsing adaptation field in packet " << TS_PacketId << "\n";
       }
     }
-    
+      // Format danych nagłówka pakietu
     char buffer[256];
-    snprintf(buffer, sizeof(buffer), "%010d ", TS_PacketId);
-    outputFile << buffer;
-
-    // Wyświetl nagłówek
-    snprintf(buffer, sizeof(buffer), "SB: 0x%02X E: %d S: %d T: %d PID: 0x%04X TSC: %d AFC: %d CC: %d\n",
+    snprintf(buffer, sizeof(buffer), "%010d TS: SB=%02X E=%d S=%d P=%d PID=%4d TSC=%d AF=%d CC=%2d",
+             TS_PacketId,
              TS_PacketHeader.getSyncByte(),
              TS_PacketHeader.getTransportErrorIndicator(),
              TS_PacketHeader.getPayloadUnitStartIndicator(),
@@ -87,7 +84,8 @@ while (inputFile.read(reinterpret_cast<char*>(TS_PacketBuffer), xTS::TS_PacketLe
     
     // Wyświetl pole adaptacyjne (tylko jeśli jest obecne)
     if (TS_PacketHeader.getAdaptationFieldControl() == 2 || TS_PacketHeader.getAdaptationFieldControl() == 3) {
-      snprintf(buffer, sizeof(buffer), "  AF: Len=%d DC=%d RA=%d SP=%d PCR=%d OPCR=%d Splice=%d Private=%d Ext=%d\n",
+      char afBuffer[256];
+      snprintf(afBuffer, sizeof(afBuffer), " AF: L=%d DC=%d RA=%d SP=%d PR=%d OR=%d SF=%d TP=%d EX=%d",
                TS_AdaptationField.getAdaptationFieldLength(),
                TS_AdaptationField.getDiscontinuityIndicator(),
                TS_AdaptationField.getRandomAccessIndicator(),
@@ -96,27 +94,28 @@ while (inputFile.read(reinterpret_cast<char*>(TS_PacketBuffer), xTS::TS_PacketLe
                TS_AdaptationField.getOPCRFlag(),
                TS_AdaptationField.getSplicingPointFlag(),
                TS_AdaptationField.getTransportPrivateDataFlag(),
-               TS_AdaptationField.getExtensionFlag());      outputFile << buffer;
+               TS_AdaptationField.getExtensionFlag());
+      outputFile << afBuffer;
+                
+      // Wyświetl informacje o PCR jeśli flaga jest ustawiona
       if (TS_AdaptationField.getPCRFlag()) {
-        snprintf(buffer, sizeof(buffer), "  PCR: Base=%llu Extension=%u Full=%llu\n",
-                 TS_AdaptationField.getPCRBase(),
-                 TS_AdaptationField.getPCRExtension(),
-                 TS_AdaptationField.getPCR());
-        outputFile << buffer;
-      }
-      if (TS_AdaptationField.getOPCRFlag()) {
-        snprintf(buffer, sizeof(buffer), "  OPCR: Base=%llu Extension=%u Full=%llu\n",
-                 TS_AdaptationField.getOPCRBase(),
-                 TS_AdaptationField.getOPCRExtension(),
-                 TS_AdaptationField.getOPCR());
-        outputFile << buffer;
+        outputFile << " PCR_base=" << TS_AdaptationField.getPCRBase()
+                  << " PCR_ext=" << TS_AdaptationField.getPCRExtension()
+                  << " PCR=" << TS_AdaptationField.getPCR();
       }
       
-      // Zawsze wyświetl informację o liczbie bajtów wypełniających
-      snprintf(buffer, sizeof(buffer), "  Stuffing Bytes: %d\n",
-               TS_AdaptationField.getStuffingBytes());
-      outputFile << buffer;
+      // Wyświetl informacje o OPCR jeśli flaga jest ustawiona
+      if (TS_AdaptationField.getOPCRFlag()) {
+        outputFile << " OPCR_base=" << TS_AdaptationField.getOPCRBase()
+                  << " OPCR_ext=" << TS_AdaptationField.getOPCRExtension()
+                  << " OPCR=" << TS_AdaptationField.getOPCR();
+      }
+      
+      // Dodaj informacje o Stuffing Bytes
+      outputFile <<" StuffingBytes=" + std::to_string(TS_AdaptationField.getStuffingBytes());
     }
+    // Add a line break after each packet output
+    outputFile << "\n";
   } else {
     outputFile << "Error parsing packet " << TS_PacketId << "\n";
   }

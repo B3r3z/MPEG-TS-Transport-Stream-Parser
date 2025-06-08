@@ -44,7 +44,7 @@ int32_t xTS_PacketHeader::Parse(const uint8_t* Input)
 /// @brief Print all TS packet header fields
 void xTS_PacketHeader::Print() const
 {
-  printf("SB: 0x%02X E: %d S: %d T: %d PID: 0x%04X TSC: %d AFC: %d CC: %d",
+  printf("SB=%02X E=%d S=%d P=%d PID=%4d TSC=%d AF=%d CC=%2d",
          m_SB, m_E, m_S, m_T, m_PID, m_TSC, m_AFC, m_CC);
 }
 
@@ -172,8 +172,8 @@ int32_t xTS_AdaptationField::Parse(const uint8_t* PacketBuffer, uint8_t Adaptati
 
 
 void xTS_AdaptationField::Print() const{
-  printf("AFC: %d Len: %d DC: %d RA: %d SP: %d PR: %d OR: %d SF: %d TP: %d EX: %d",
-         m_AFC, m_Len, m_DC, m_RA, m_SP, m_PR, m_OR, m_SF, m_TP, m_EX);
+  printf("AF: L=%3d DC=%d RA=%d SP=%d PR=%d OR=%d SF=%d TP=%d EX=%d",
+         m_Len, m_DC, m_RA, m_SP, m_PR, m_OR, m_SF, m_TP, m_EX);
 }
 
 int32_t xTS_AdaptationField::getStuffingBytes() const{
