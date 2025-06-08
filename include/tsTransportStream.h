@@ -116,7 +116,16 @@ class xTS_AdaptationField{
     //prc (program clokc reference) and opcr (original program clock reference) are not implemented yet
     uint64_t m_PCR_base; // Program clock reference
     uint16_t m_PCR_extension; // Program clock reference extension
-
+    uint64_t m_OPCR_base; // Original program clock reference
+    uint16_t m_OPCR_extension; // Original program clock reference extension
+    
+    // Dodatkowe pola do przechowywania danych o długościach pól opcjonalnych
+    uint8_t m_PrivateDataLength;    // Długość transport private data
+    uint8_t m_ExtensionLength;      // Długość extension data
+    uint8_t m_SplicingPointOffset;  // Offset dla splicing point
+    
+    // Kopia wskaźnika do bufora - do analizy pól o zmiennej długości
+    const uint8_t* m_Buffer;
   public:
     void Reset();
     int32_t Parse(const uint8_t* PocketBUffer, uint8_t AdaptationFieldControl);
@@ -135,4 +144,8 @@ class xTS_AdaptationField{
     uint64_t getPCRBase() const { return m_PCR_base; }
     uint16_t getPCRExtension() const { return m_PCR_extension; }
     uint64_t getPCR() const { return (m_PCR_base * 300 + m_PCR_extension);}
+    uint64_t getOPCRBase() const { return m_OPCR_base; }
+    uint16_t getOPCRExtension() const { return m_OPCR_extension; }
+    uint64_t getOPCR() const { return (m_OPCR_base * 300 + m_OPCR_extension); }
+    int32_t getStuffingBytes() const;
 };

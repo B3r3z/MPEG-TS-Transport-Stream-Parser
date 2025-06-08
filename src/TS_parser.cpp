@@ -96,15 +96,26 @@ while (inputFile.read(reinterpret_cast<char*>(TS_PacketBuffer), xTS::TS_PacketLe
                TS_AdaptationField.getOPCRFlag(),
                TS_AdaptationField.getSplicingPointFlag(),
                TS_AdaptationField.getTransportPrivateDataFlag(),
-               TS_AdaptationField.getExtensionFlag());
-      outputFile << buffer;
+               TS_AdaptationField.getExtensionFlag());      outputFile << buffer;
       if (TS_AdaptationField.getPCRFlag()) {
-        snprintf(buffer, sizeof(buffer), "  PCR: Base=%llu Extension=%u full%llu = \n",
+        snprintf(buffer, sizeof(buffer), "  PCR: Base=%llu Extension=%u Full=%llu\n",
                  TS_AdaptationField.getPCRBase(),
                  TS_AdaptationField.getPCRExtension(),
                  TS_AdaptationField.getPCR());
         outputFile << buffer;
       }
+      if (TS_AdaptationField.getOPCRFlag()) {
+        snprintf(buffer, sizeof(buffer), "  OPCR: Base=%llu Extension=%u Full=%llu\n",
+                 TS_AdaptationField.getOPCRBase(),
+                 TS_AdaptationField.getOPCRExtension(),
+                 TS_AdaptationField.getOPCR());
+        outputFile << buffer;
+      }
+      
+      // Zawsze wyświetl informację o liczbie bajtów wypełniających
+      snprintf(buffer, sizeof(buffer), "  Stuffing Bytes: %d\n",
+               TS_AdaptationField.getStuffingBytes());
+      outputFile << buffer;
     }
   } else {
     outputFile << "Error parsing packet " << TS_PacketId << "\n";
