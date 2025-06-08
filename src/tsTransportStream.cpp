@@ -56,6 +56,15 @@ void xTS_PacketHeader::Print() const
 void  xTS_AdaptationField::Reset(){
   m_AFC = 0;
   m_Len = 0;
+  //flag resetet
+  m_DC = 0;
+  m_RA = 0;
+  m_SP = 0;
+  m_PR = 0;
+  m_OR = 0;
+  m_SF = 0;
+  m_TP = 0;
+  m_EX = 0;
 }
 
 /**
@@ -74,6 +83,31 @@ int32_t xTS_AdaptationField::Parse(const uint8_t* PocketBuffer, uint8_t xTS_Adap
   }
   m_Len = PocketBuffer[0];
   if((m_Len > 183 && m_AFC ==3) || (m_Len >184 && m_AFC == 2)) return NOT_VALID; // Invalid length for adaptation field
+  if (m_Len >= 1) {
+      m_DC = (PocketBuffer[1] & 0x80) >> 7;  // 0b10000000
+      m_RA = (PocketBuffer[1] & 0x40) >> 6;  // 0b01000000
+      m_SP = (PocketBuffer[1] & 0x20) >> 5;  // 0b00100000
+      m_PR = (PocketBuffer[1] & 0x10) >> 4;  // 0b00010000
+      m_OR = (PocketBuffer[1] & 0x08) >> 3;  // 0b00001000
+      m_SF = (PocketBuffer[1] & 0x04) >> 2;  // 0b00000100
+      m_TP = (PocketBuffer[1] & 0x02) >> 1;  // 0b00000010
+      m_EX = (PocketBuffer[1] & 0x01);       // 0b00000001
+      
+    // TODO: Jeśli PCR flag jest ustawiona (m_PR == 1), parsuj PCR
+     if (m_PR) {
+         // Parsowanie PCR z bajtów 2-7
+     }
+      
+      // TODO: Podobnie dla innych flag (OPCR, splicing point, itp.)
+  }
+  
   // TODO: ANALLIZA PCR 
   return m_Len + 1; // +1 for the length byte itself
+}
+
+
+void xTS_AdaptationField::Print() const
+{
+  printf("AFC: %d Len: %d DC: %d RA: %d SP: %d PR: %d OR: %d SF: %d TP: %d EX: %d",
+         m_AFC, m_Len, m_DC, m_RA, m_SP, m_PR, m_OR, m_SF, m_TP, m_EX);
 }

@@ -102,6 +102,17 @@ class xTS_AdaptationField{
   protected:
     uint8_t  m_AFC; // Adaptation field control
     uint8_t  m_Len; // Adaptation field length
+
+    //flags for adaptation field
+    uint8_t  m_DC;  // Discontinuity indicator
+    uint8_t  m_RA;  // Random access indicator
+    uint8_t  m_SP;  // Elementary stream priority indicator
+    uint8_t  m_PR;  // PCR flag
+    uint8_t  m_OR;  // OPCR flag
+    uint8_t  m_SF;  // Splicing point flag
+    uint8_t  m_TP;  // Transport private data flag
+    uint8_t  m_EX;  // Extension flag
+    
   // TODO : PCR field
   public:
     void Reset();
@@ -110,4 +121,12 @@ class xTS_AdaptationField{
     uint8_t getAdaptationFieldIndicator() const { return m_AFC; }
     uint8_t getAdaptationFieldLength() const { return m_Len; }
     void setAdaptationFieldControl(uint8_t afc) {m_AFC = afc;}
+    uint8_t getDiscontinuityIndicator() const { return m_DC; }
+    uint8_t getRandomAccessIndicator() const { return m_RA; }
+    uint8_t getESPriorityIndicator() const { return m_SP; }
+    uint8_t getPCRFlag() const { return m_PR; }
+    uint8_t getOPCRFlag() const { return m_OR; }
+    uint8_t getSplicingPointFlag() const { return m_SF; }
+    uint8_t getTransportPrivateDataFlag() const { return m_TP; }
+    uint8_t getExtensionFlag() const { return m_EX; }
 };

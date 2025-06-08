@@ -55,39 +55,56 @@ int main(int argc, char *argv[], char *envp[])
   uint8_t TS_PacketBuffer[xTS::TS_PacketLength];
   int32_t TS_PacketId = 0;
 
-  while (inputFile.read(reinterpret_cast<char*>(TS_PacketBuffer), xTS::TS_PacketLength)){
-    TS_PacketHeader.Reset();
-    TS_AdaptationField.Reset();
-    if (TS_PacketHeader.Parse(TS_PacketBuffer) == xTS::TS_HeaderLength){
-      //uint8_t AFC = TS_PacketHeader.getAdaptationFieldControl();
-      //if(AFC == 2 || AFC == 3){
-      //  TS_AdaptationField.Reset();
-      //  TS_AdaptationField.setAdaptationFieldControle(AFC);
-      //  TS_AdaptationField.Parse(TS_PacketBuffer + xTS::TS_HeaderLength, );
-      //}
-      TS_AdaptationField.Parse(TS_PacketBuffer + xTS::TS_HeaderLength, TS_PacketHeader.getAdaptationFieldControl());
-      char buffer[256];
-      snprintf(buffer, sizeof(buffer), "%010d ", TS_PacketId);
-      outputFile << buffer;
+while (inputFile.read(reinterpret_cast<char*>(TS_PacketBuffer), xTS::TS_PacketLength)) {
+  TS_PacketHeader.Reset();
+  TS_AdaptationField.Reset();
+  
+  if (TS_PacketHeader.Parse(TS_PacketBuffer) == xTS::TS_HeaderLength) {
+    // Parsuj pole adaptacyjne jeśli jest obecne
+    if (TS_PacketHeader.getAdaptationFieldControl() == 2 || TS_PacketHeader.getAdaptationFieldControl() == 3) {
+      int32_t result = TS_AdaptationField.Parse(TS_PacketBuffer + xTS::TS_HeaderLength, 
+                                                TS_PacketHeader.getAdaptationFieldControl());
+      if (result < 0) {
+        outputFile << "Error parsing adaptation field in packet " << TS_PacketId << "\n";
+      }
+    }
+    
+    char buffer[256];
+    snprintf(buffer, sizeof(buffer), "%010d ", TS_PacketId);
+    outputFile << buffer;
 
-      // Redirect header analysis to the output file
-      snprintf(buffer, sizeof(buffer), "SB: 0x%02X E: %d S: %d T: %d PID: 0x%04X TSC: %d AFC: %d CC: %d\n",
-               TS_PacketHeader.getSyncByte(),
-               TS_PacketHeader.getTransportErrorIndicator(),
-               TS_PacketHeader.getPayloadUnitStartIndicator(),
-               TS_PacketHeader.getTransportPriority(),
-               TS_PacketHeader.getPID(),
-               TS_PacketHeader.getTransportScramblingControl(),
-               TS_PacketHeader.getAdaptationFieldControl(),
-               TS_PacketHeader.getContinuityCounter());
+    // Wyświetl nagłówek
+    snprintf(buffer, sizeof(buffer), "SB: 0x%02X E: %d S: %d T: %d PID: 0x%04X TSC: %d AFC: %d CC: %d\n",
+             TS_PacketHeader.getSyncByte(),
+             TS_PacketHeader.getTransportErrorIndicator(),
+             TS_PacketHeader.getPayloadUnitStartIndicator(),
+             TS_PacketHeader.getTransportPriority(),
+             TS_PacketHeader.getPID(),
+             TS_PacketHeader.getTransportScramblingControl(),
+             TS_PacketHeader.getAdaptationFieldControl(),
+             TS_PacketHeader.getContinuityCounter());
+    outputFile << buffer;
+    
+    // Wyświetl pole adaptacyjne (tylko jeśli jest obecne)
+    if (TS_PacketHeader.getAdaptationFieldControl() == 2 || TS_PacketHeader.getAdaptationFieldControl() == 3) {
+      snprintf(buffer, sizeof(buffer), "  AF: Len=%d DC=%d RA=%d SP=%d PCR=%d OPCR=%d Splice=%d Private=%d Ext=%d\n",
+               TS_AdaptationField.getAdaptationFieldLength(),
+               TS_AdaptationField.getDiscontinuityIndicator(),
+               TS_AdaptationField.getRandomAccessIndicator(),
+               TS_AdaptationField.getESPriorityIndicator(),
+               TS_AdaptationField.getPCRFlag(),
+               TS_AdaptationField.getOPCRFlag(),
+               TS_AdaptationField.getSplicingPointFlag(),
+               TS_AdaptationField.getTransportPrivateDataFlag(),
+               TS_AdaptationField.getExtensionFlag());
       outputFile << buffer;
     }
-    else{
-      outputFile << "Error parsing packet " << TS_PacketId << "\n";
-    }
-
-    TS_PacketId++;
+  } else {
+    outputFile << "Error parsing packet " << TS_PacketId << "\n";
   }
+  
+  TS_PacketId++;
+}
 
   inputFile.close();
   outputFile.close();
