@@ -1,5 +1,5 @@
-#include "tsCommon.h"
-#include "tsTransportStream.h"
+#include "../include/tsCommon.h"
+#include "../include/tsTransportStream.h"
 #include <fstream>
 #include <iomanip>
 
