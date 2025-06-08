@@ -65,6 +65,9 @@ void  xTS_AdaptationField::Reset(){
   m_SF = 0;
   m_TP = 0;
   m_EX = 0;
+  //pcr and opcr
+  m_PCR_base = 0;
+  m_PCR_extension = 0;
 }
 
 /**
@@ -94,8 +97,17 @@ int32_t xTS_AdaptationField::Parse(const uint8_t* PocketBuffer, uint8_t xTS_Adap
       m_EX = (PocketBuffer[1] & 0x01);       // 0b00000001
       
     // TODO: Jeśli PCR flag jest ustawiona (m_PR == 1), parsuj PCR
-     if (m_PR) {
-         // Parsowanie PCR z bajtów 2-7
+     if (m_PR && m_Len >= 7) {
+            // PCR_base (33 bity) = bajt 2 (8 bitów) + bajt 3 (8 bitów) + bajt 4 (8 bitów) + bajt 5 (8 bitów) + pierwsze 7 bitów z bajtu 6
+            m_PCR_base = ((uint64_t)PocketBuffer[2] << 25) |
+                        ((uint64_t)PocketBuffer[3] << 17) |
+                        ((uint64_t)PocketBuffer[4] << 9) |
+                        ((uint64_t)PocketBuffer[5] << 1) |
+                        ((uint64_t)PocketBuffer[6] >> 7);
+            
+            // PCR_extension (9 bitów) = ostatnie 8 bitów z bajtu 6 + ostatni bit z bajtu 7
+            m_PCR_extension = ((uint16_t)(PocketBuffer[6] & 0x01) << 8) |
+                             (uint16_t)PocketBuffer[7];
      }
       
       // TODO: Podobnie dla innych flag (OPCR, splicing point, itp.)

@@ -98,6 +98,13 @@ while (inputFile.read(reinterpret_cast<char*>(TS_PacketBuffer), xTS::TS_PacketLe
                TS_AdaptationField.getTransportPrivateDataFlag(),
                TS_AdaptationField.getExtensionFlag());
       outputFile << buffer;
+      if (TS_AdaptationField.getPCRFlag()) {
+        snprintf(buffer, sizeof(buffer), "  PCR: Base=%llu Extension=%u full%llu = \n",
+                 TS_AdaptationField.getPCRBase(),
+                 TS_AdaptationField.getPCRExtension(),
+                 TS_AdaptationField.getPCR());
+        outputFile << buffer;
+      }
     }
   } else {
     outputFile << "Error parsing packet " << TS_PacketId << "\n";

@@ -112,8 +112,11 @@ class xTS_AdaptationField{
     uint8_t  m_SF;  // Splicing point flag
     uint8_t  m_TP;  // Transport private data flag
     uint8_t  m_EX;  // Extension flag
-    
-  // TODO : PCR field
+
+    //prc (program clokc reference) and opcr (original program clock reference) are not implemented yet
+    uint64_t m_PCR_base; // Program clock reference
+    uint16_t m_PCR_extension; // Program clock reference extension
+
   public:
     void Reset();
     int32_t Parse(const uint8_t* PocketBUffer, uint8_t AdaptationFieldControl);
@@ -129,4 +132,7 @@ class xTS_AdaptationField{
     uint8_t getSplicingPointFlag() const { return m_SF; }
     uint8_t getTransportPrivateDataFlag() const { return m_TP; }
     uint8_t getExtensionFlag() const { return m_EX; }
+    uint64_t getPCRBase() const { return m_PCR_base; }
+    uint16_t getPCRExtension() const { return m_PCR_extension; }
+    uint64_t getPCR() const { return (m_PCR_base * 300 + m_PCR_extension);}
 };
