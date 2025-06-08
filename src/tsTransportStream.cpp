@@ -49,3 +49,31 @@ void xTS_PacketHeader::Print() const
 }
 
 //=============================================================================================================================================================================
+// xTS_AdaptationField
+//=============================================================================================================================================================================
+
+/// @brief Reset - reset all TS adaptation field fields
+void  xTS_AdaptationField::Reset(){
+  m_AFC = 0;
+  m_Len = 0;
+}
+
+/**
+  @brief Parse all TS adaptation field fields
+  @param PocketBuffer is pointer to buffer containing TS packet
+  @param AdaptationFieldBuffer is pointer to buffer where adaptation field will be stored
+  @return Number of parsed bytes (0 on success, -1 on failure) 
+ */
+int32_t xTS_AdaptationField::Parse(const uint8_t* PocketBuffer, uint8_t xTS_AdaptationField){
+  if(PocketBuffer == nullptr) return NOT_VALID;
+  m_AFC = xTS_AdaptationField;
+  if(m_AFC != 2 && m_AFC != 3){
+    // No adaptation field present
+    m_Len = 0;
+    return 0;
+  }
+  m_Len = PocketBuffer[0];
+  if((m_Len > 183 && m_AFC ==3) || (m_Len >184 && m_AFC == 2)) return NOT_VALID; // Invalid length for adaptation field
+  // TODO: ANALLIZA PCR 
+  return m_Len + 1; // +1 for the length byte itself
+}

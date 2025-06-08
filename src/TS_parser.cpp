@@ -51,14 +51,21 @@ int main(int argc, char *argv[], char *envp[])
   }
 
   xTS_PacketHeader TS_PacketHeader;
+  xTS_AdaptationField TS_AdaptationField;
   uint8_t TS_PacketBuffer[xTS::TS_PacketLength];
   int32_t TS_PacketId = 0;
 
-  while (inputFile.read(reinterpret_cast<char*>(TS_PacketBuffer), xTS::TS_PacketLength))
-  {
+  while (inputFile.read(reinterpret_cast<char*>(TS_PacketBuffer), xTS::TS_PacketLength)){
     TS_PacketHeader.Reset();
-    if (TS_PacketHeader.Parse(TS_PacketBuffer) == xTS::TS_HeaderLength)
-    {
+    TS_AdaptationField.Reset();
+    if (TS_PacketHeader.Parse(TS_PacketBuffer) == xTS::TS_HeaderLength){
+      //uint8_t AFC = TS_PacketHeader.getAdaptationFieldControl();
+      //if(AFC == 2 || AFC == 3){
+      //  TS_AdaptationField.Reset();
+      //  TS_AdaptationField.setAdaptationFieldControle(AFC);
+      //  TS_AdaptationField.Parse(TS_PacketBuffer + xTS::TS_HeaderLength, );
+      //}
+      TS_AdaptationField.Parse(TS_PacketBuffer + xTS::TS_HeaderLength, TS_PacketHeader.getAdaptationFieldControl());
       char buffer[256];
       snprintf(buffer, sizeof(buffer), "%010d ", TS_PacketId);
       outputFile << buffer;
@@ -75,8 +82,7 @@ int main(int argc, char *argv[], char *envp[])
                TS_PacketHeader.getContinuityCounter());
       outputFile << buffer;
     }
-    else
-    {
+    else{
       outputFile << "Error parsing packet " << TS_PacketId << "\n";
     }
 

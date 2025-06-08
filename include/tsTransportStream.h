@@ -40,7 +40,6 @@ class xTS
 public:
   static constexpr uint32_t TS_PacketLength  = 188;
   static constexpr uint32_t TS_HeaderLength  = 4;
-
   static constexpr uint32_t PES_HeaderLength = 6;
 
   static constexpr uint32_t BaseClockFrequency_Hz         =    90000; //Hz
@@ -98,3 +97,17 @@ public:
 };
 
 //=============================================================================================================================================================================
+
+class xTS_AdaptationField{
+  protected:
+    uint8_t  m_AFC; // Adaptation field control
+    uint8_t  m_Len; // Adaptation field length
+  // TODO : PCR field
+  public:
+    void Reset();
+    int32_t Parse(const uint8_t* PocketBUffer, uint8_t AdaptationFieldControl);
+    void Print() const;
+    uint8_t getAdaptationFieldIndicator() const { return m_AFC; }
+    uint8_t getAdaptationFieldLength() const { return m_Len; }
+    void setAdaptationFieldControl(uint8_t afc) {m_AFC = afc;}
+}
