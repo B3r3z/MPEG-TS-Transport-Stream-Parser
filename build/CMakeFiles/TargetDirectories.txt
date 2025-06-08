@@ -1,3 +1,0 @@
-/home/bartosz/Documents/PROJECT/PDM/lab02_MPEG-TS-S1-TRANSPORT_STREAM_PARSER_HEADER/build/CMakeFiles/TS-PARSER.dir
-/home/bartosz/Documents/PROJECT/PDM/lab02_MPEG-TS-S1-TRANSPORT_STREAM_PARSER_HEADER/build/CMakeFiles/edit_cache.dir
-/home/bartosz/Documents/PROJECT/PDM/lab02_MPEG-TS-S1-TRANSPORT_STREAM_PARSER_HEADER/build/CMakeFiles/rebuild_cache.dir
