@@ -35,11 +35,13 @@ endif()
 
 set(PROJECT_HEADERS
   include/tsCommon.h
-  include/tsTransportStream.h)
+  include/tsTransportStream.h
+  include/pesParse.h)
 
 set(PROJECT_SOURCES  
   src/TS_parser.cpp
-  src/tsTransportStream.cpp)
+  src/tsTransportStream.cpp
+  src/pesParse.cpp)
 
 source_group("Header Files" FILES ${PROJECT_HEADERS})
 source_group("Source Files" FILES ${PROJECT_SOURCES})
